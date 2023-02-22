@@ -1,4 +1,16 @@
-guessed=""
+#%% LIBRARIES
+
+import nltk
+nltk.download('words')
+
+from nltk.corpus import words
+from random import randrange
+
+
+#%%
+word_list = words.words()
+
+
 letters = []
 hangman = ['']
 stages = ['________ ','|     \n________' ,'| /   \n________', 
@@ -15,7 +27,7 @@ def check_letter(word):
         if letter in letters:
             show += letter
         else:
-            show += "_"
+            show += "_ "
     return show
             
 def guess(word):
@@ -36,14 +48,16 @@ def guess(word):
     return guessed
  
         
-
-word="snowflake"
-while guessed!=word:
-    guessed = guess(word)
-    if guessed == word:
-        print("YOU WIN! :D")
-    elif len(hangman)==len(stages)+1:
-        print("YOU LOST!\nthe word was: ", word)
-        break
+def game():
+    guessed=""
+    word = word_list[randrange(0, len(word_list), 1)]
+    print("_ " * len(word))
+    while guessed!=word:
+        guessed = guess(word)
+        if guessed == word:
+            print("YOU WIN! :D")
+        elif len(hangman)==len(stages)+1:
+            print("YOU LOST!\nthe word was: ", word)
+            break
     
-
+game()
