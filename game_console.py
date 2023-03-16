@@ -33,7 +33,7 @@ def check_letter(word):
 def guess(word):
     guessed=""
     letter = input("Guess a letter! ").lower()
-    if len(letter)!=1:
+    if len(letter)!=1 or letter.isalpha()==False:
         print("This is not a letter...")
     elif letter in letters:
         print("Letter already guessed")

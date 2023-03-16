@@ -2,63 +2,73 @@ import pygame
 
 def drawing(wrong):
     
-    pos=[[(250,300), (250,400)],[(250,350), (300,380)],
-         [(250,350), (200,380)],[(250,350), (200,380)],
-         [(250,400), (300,450)],[(250,400), (200,450)]]
+    pos=[[(250,300), (250,400)],[(250,350), (300,380)], #human
+         [(250,350), (200,380)],[(250,350), (200,380)], #human
+         [(250,400), (300,450)],[(250,400), (200,450)], #human
+         [(100,500), (350,500)],[(150,500), (150,200)], #gallows
+         [(100,500), (150,450)],[(200,500), (150,450)], #gallows
+         [(200,200), (150,250)],[(100,200), (300,200)], #gallows
+         [(250,270), (250,200)]]                        #gallows   
         
     for i in range(len(wrong)):
-        if len(wrong)<6:
+        if i<7:
             color="purple"
         else:
             color="brown"
             
         if i==0:
+            color="purple"
             pygame.draw.circle(screen, color, (250,300), 30)
         else:
             pygame.draw.line(screen, color, pos[i-1][0], pos[i-1][1], 3)
+           
 
+def check_letter(word):
+    show =""
+    for letter in word:
+        letter = letter.lower()
+        if letter in letters:
+            show += letter
+        else:
+            show += "_ "
     
-    
-    #szubienica
-    
-    
-    pygame.draw.line(screen, color, (100,500), (350,500),3)
-    pygame.draw.line(screen, color, (150,500), (150,200),3)
-    pygame.draw.line(screen, color, (100,500), (150,450),3)
-    pygame.draw.line(screen, color, (200,500), (150,450),3)
-    pygame.draw.line(screen, color, (200,200), (150,250),3)
-    pygame.draw.line(screen, color, (100,200), (300,200),3)
-    pygame.draw.line(screen, color, (250,270), (250,200),3)
+    guessed = font.render(show, True, "black")
+    text_rect = guessed.get_rect(center=(250, 100))
+    pygame.draw.rect(screen, "white", pygame.Rect(40, 65, 420, 70))
+    screen.blit(guessed,text_rect)     
+            
+    return show
+            
+def guess(word, letter):
+    letter = letter.lower()
+    if len(letter)!=1 or letter.isalpha()==False:
+        letter = letter + " is not a letter..."
+        color="orange"
+    elif letter in letters:
+        print(letter + " already guessed!")
+        color="yellow"
+    else:
+        letters.append(letter)
+        color="green"
+        if letter not in word:
+            wrong.append(letter)
+            color="red"
+        check_letter(word)
+        
+    text_surface = font.render(letter, True, color)
+    text_rect = text_surface.get_rect(center=(250, 640))
+    screen.blit(letter, text_rect)
 
-
-
-
-pygame.init()
-screen = pygame.display.set_mode((500,720))
-font = pygame.font.Font(pygame.font.get_default_font(), 36)
-running = True
-
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    screen.fill("light blue")   
-    
-
+def show_alphabet():
     alphabet = ['a','b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p','q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-    guessed=["c","d", "i"]
-    wrong=["z"]
-    
-    drawing(wrong)
-    
-    back = (0,0,0)
     color_font = ["black", "blue", "red"]
     images = []
     for letter in alphabet:
-        if letter in wrong:
-            color = color_font[2]
-        elif letter in guessed:
-            color = color_font[1]
+        if letter in letters:
+            if letter in wrong:
+                color = color_font[2]
+            else:
+                color = color_font[1]
         else:
             color = color_font[0]
         s_image = font.render(letter, True, color)
@@ -67,18 +77,54 @@ while running:
     
     for index, image in enumerate(images):
         if index < len(images)/2:
-            screen.blit(image,(20 + index*35 ,560))
-            
+            image_rect = image.get_rect(center=(40 + index*35, 560))
         else:
-            screen.blit(image,(20 + (index-len(images)/2)*35 ,600))
+            image_rect = image.get_rect(center=(40 + (index-len(images)/2)*35 ,600))
+        screen.blit(image,image_rect)
 
 
-# # now print the text
-#     text_surface = font.render("".join(alphabet), True, "black")
-#     screen.blit(text_surface, (5,550))    
+word="midnight"
+letters=[]
+wrong=[]
+letter = ""
+
+pygame.init()
+screen = pygame.display.set_mode((500,720))
+font = pygame.font.Font(pygame.font.get_default_font(), 36)
+running = True
+game_over = False
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type ==pygame.KEYDOWN:
+            if game_over==False:
+                letter = event.unicode
+                guess(word)
+                drawing(wrong)
+                show_alphabet()
+                guessed = check_letter(word)
+                if guessed == word:
+                    print("YOU WIN! :D")
+                    game_over == True
+                elif len(wrong)==14:
+                    print("YOU LOST!\nthe word was: ", word)
+                    game_over == True
+            else:
+                letter
+                
+                
+    
+            
+    screen.fill("light blue")   
+
+    
+   
+    
 
     pygame.display.flip()
-        
+    
     
 pygame.quit()
 
