@@ -43,7 +43,7 @@ def check_letter(word):
     
     guessed = font.render(show, True, "black")
     text_rect = guessed.get_rect(center=(250, 100))
-    pygame.draw.rect(screen, "white", pygame.Rect(40, 65, 420, 70))
+    pygame.draw.rect(screen, "white", pygame.Rect(20, 65, 460, 70))
     screen.blit(guessed,text_rect)     
             
     return show
@@ -63,7 +63,8 @@ def guess(word, letter):
             wrong.append(letter)
             color="red"
         check_letter(word)
-        
+    
+    pygame.draw.rect(screen, "white", pygame.Rect(200, 620, 100, 50))
     text_surface = font.render(letter, True, color)
     text_rect = text_surface.get_rect(center=(250, 640))
     screen.blit(text_surface, text_rect)
@@ -114,6 +115,7 @@ game_over = False
 letters=[]
 wrong=[]
 word = new_game()
+
 letter = ""
 screen.fill("light blue")
 
@@ -121,6 +123,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        check_letter(word)
+        show_alphabet()
         if event.type ==pygame.KEYDOWN:
             if game_over==False:
                 letter = str(event.unicode)
