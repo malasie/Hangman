@@ -1,4 +1,13 @@
+#%% Libraries 
+
 import pygame
+import nltk
+nltk.download('words')
+
+from nltk.corpus import words
+from random import randrange
+
+#%%%
 
 def drawing(wrong):
     
@@ -57,7 +66,7 @@ def guess(word, letter):
         
     text_surface = font.render(letter, True, color)
     text_rect = text_surface.get_rect(center=(250, 640))
-    screen.blit(letter, text_rect)
+    screen.blit(text_surface, text_rect)
 
 def show_alphabet():
     alphabet = ['a','b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p','q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
@@ -83,10 +92,17 @@ def show_alphabet():
         screen.blit(image,image_rect)
 
 
-word="midnight"
-letters=[]
-wrong=[]
-letter = ""
+def new_game():
+    
+    word_list = words.words()
+    word = word_list[randrange(0, len(word_list), 1)]
+    check_letter(word)
+    show_alphabet()
+    return word
+
+
+
+#%%
 
 pygame.init()
 screen = pygame.display.set_mode((500,720))
@@ -94,30 +110,42 @@ font = pygame.font.Font(pygame.font.get_default_font(), 36)
 running = True
 game_over = False
 
+
+letters=[]
+wrong=[]
+word = new_game()
+letter = ""
+screen.fill("light blue")
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type ==pygame.KEYDOWN:
             if game_over==False:
-                letter = event.unicode
-                guess(word)
+                letter = str(event.unicode)
+                guess(word, letter)
                 drawing(wrong)
                 show_alphabet()
                 guessed = check_letter(word)
                 if guessed == word:
                     print("YOU WIN! :D")
-                    game_over == True
+                    game_over = True
                 elif len(wrong)==14:
                     print("YOU LOST!\nthe word was: ", word)
-                    game_over == True
+                    game_over = True
             else:
-                letter
-                
+                screen.fill("light blue")
+                letters=[]
+                wrong=[]
+                word = new_game()
+                letter = ""
+                game_over = False
+                                
                 
     
             
-    screen.fill("light blue")   
+       
 
     
    
