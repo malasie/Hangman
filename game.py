@@ -51,11 +51,11 @@ def check_letter(word):
 def guess(word, letter):
     letter = letter.lower()
     if len(letter)!=1 or letter.isalpha()==False:
-        letter = letter + " is not a letter..."
+        letter = letter
         color="orange"
     elif letter in letters:
-        print(letter + " already guessed!")
         color="yellow"
+        
     else:
         letters.append(letter)
         color="green"
@@ -70,6 +70,7 @@ def guess(word, letter):
     screen.blit(text_surface, text_rect)
 
 def show_alphabet():
+
     alphabet = ['a','b', 'c', 'd', 'e','f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p','q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     color_font = ["black", "blue", "red"]
     images = []
@@ -83,7 +84,7 @@ def show_alphabet():
             color = color_font[0]
         s_image = font.render(letter, True, color)
         images.append(s_image)
-    
+        
     
     for index, image in enumerate(images):
         if index < len(images)/2:
@@ -108,6 +109,7 @@ def new_game():
 pygame.init()
 screen = pygame.display.set_mode((500,720))
 font = pygame.font.Font(pygame.font.get_default_font(), 36)
+font2 = pygame.font.Font(pygame.font.get_default_font(), 60)
 running = True
 game_over = False
 
@@ -125,6 +127,7 @@ while running:
             running = False
         check_letter(word)
         show_alphabet()
+        
         if event.type ==pygame.KEYDOWN:
             if game_over==False:
                 letter = str(event.unicode)
@@ -132,11 +135,30 @@ while running:
                 drawing(wrong)
                 show_alphabet()
                 guessed = check_letter(word)
+                
                 if guessed == word:
-                    print("YOU WIN! :D")
+                    screen.fill("light blue")
+                    pygame.draw.rect(screen, "black", pygame.Rect(50, 200, 400, 300))
+                    message = font2.render("YOU WIN! :D", True, "yellow")
+                    mess_rect = message.get_rect(center=(250, 360))
+                    screen.blit(message,mess_rect)     
+                    
                     game_over = True
+                    
                 elif len(wrong)==14:
-                    print("YOU LOST!\nthe word was: ", word)
+                    screen.fill("light blue")
+                    pygame.draw.rect(screen, "black", pygame.Rect(50, 200, 400, 300))
+                  
+                    message = font2.render("YOU LOST!", True, "red")
+                    message2 = font.render("The word was: ", True, "white")
+                    message3 = font.render(word, True, "red")
+                    mess_rect = message.get_rect(center=(250, 300))
+                    mess_rect2 = message2.get_rect(center=(250, 400))
+                    mess_rect3 = message3.get_rect(center=(250, 450))
+                    screen.blit(message,mess_rect)     
+                    screen.blit(message2,mess_rect2)    
+                    screen.blit(message3,mess_rect3) 
+                    
                     game_over = True
             else:
                 screen.fill("light blue")
